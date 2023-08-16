@@ -1,36 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
 
 import "./form.scss";
 
-class Form extends React.Component {
-  handleSubmit = (e) => {
+function Form(props) {
+  const [body, setBody] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = {
-      method: "GET",
-      url: "https://pokeapi.co/api/v2/pokemon",
+      method: e.target[1].value,
+      url: e.target[0].value,
     };
-    this.props.handleApiCall(formData);
+    props.handleApiCall(formData);
+    let url = "https://reqres.in/api/posts";
+    let response = await fetch(url, {
+      method: formData.method,
+      headers: {
+        "access-control-allow-origin": "*",
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    });
+    let data = await response.json();
+    props.setResult(data);
+    console.log(data);
   };
 
-  render() {
-    return (
-      <>
-        <form onSubmit={this.handleSubmit}>
+  const textArea = (e) => {
+    e.target.value === "POST" || e.target.value === "PUT"
+      ? setBody(true)
+      : setBody(false);
+  };
+
+  return (
+    <>
+      <form onSubmit={handleSubmit}>
+        <label>
+          <input name="url" type="text" required placeholder="URL" />
+        </label>
+        <label className="methods">
+          <select onChange={textArea} id="methods">
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+          </select>
+        </label>
+        {body ? (
           <label>
-            <span>URL: </span>
-            <input name="url" type="text" />
-            <button type="submit">GO!</button>
+            <span>Body</span>
+            <textarea></textarea>
           </label>
-          <label className="methods">
-            <span id="get">GET</span>
-            <span id="post">POST</span>
-            <span id="put">PUT</span>
-            <span id="delete">DELETE</span>
-          </label>
-        </form>
-      </>
-    );
-  }
+        ) : null}
+        <button type="submit">GO!</button>
+      </form>
+    </>
+  );
 }
 
 export default Form;
