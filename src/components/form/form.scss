@@ -1,29 +1,43 @@
-$backgroundColor: #efefef;
-$radius: 60%;
+$radius: 40%;
 
 form {
-  display: inline-block;
-  margin: auto;
-  width: 200px;
+  display: flex;
+  width: 400px;
+  left: 32%;
 
-  label {
+  label:nth-child(1) {
     display: flex;
     margin: 1rem 0;
 
-    &.methods {
-      span {
-        cursor: pointer;
-        margin-right: 1rem;
-        padding: .25rem .5rem;
-        background: #ccc;
+    input {
+      box-sizing: border-box;
+      display: block;
+      width: 40rem;
+      height: 2rem;
+      border-radius: 8px;
+      border: none;
+      padding: calc(var(--size-bezel) * 1.5) var(--size-bezel);
+      margin-left: 30px;
 
-        &:hover, &.active {
-          background: #fff;
-        }
-        
-      }
     }
+
+          ::-webkit-input-placeholder {
+          padding-left: 5px;
+          }
+
+    select {
+      border: 3px solid currentColor;
+      margin-left: 4rem;
+      font-size: 20px;
+      font-weight: 500px;
+      text-align: center;
+      ;
+    }
+
+
+
   }
+
   button {
     margin-left: 4rem;
     appearance: none;
@@ -51,7 +65,6 @@ form {
   button:hover {
     background-color: #82E0AA;
     color: black;
-    // box-shadow: #FF6314 0 -6px 8px inset;
     transform: scale(1.125);
     border-color: black;
     border-style: solid;
@@ -60,5 +73,12 @@ form {
 
   button:active {
     transform: scale(1.025);
+  }
+
+  @media (min-width: 768px) {
+    button {
+      font-size: 1.5rem;
+      padding: .75rem 2rem;
+    }
   }
 }
