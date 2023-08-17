@@ -6,8 +6,8 @@ class Results extends React.Component {
     return (
       <section>
         <pre>
-          {this.props.data
-            ? JSON.stringify(this.props.data, undefined, 2)
+          {this.props.result
+            ? JSON.stringify(this.props.result, undefined, 2)
             : null}
         </pre>
       </section>

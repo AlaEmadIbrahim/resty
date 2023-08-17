@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-
 import "./form.scss";
 
 function Form(props) {
   const [body, setBody] = useState(false);
+  const [requestBody, setRequestBody] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -11,24 +11,35 @@ function Form(props) {
       method: e.target[1].value,
       url: e.target[0].value,
     };
-    props.handleApiCall(formData);
-    let url = "https://reqres.in/api/posts";
-    let response = await fetch(url, {
-      method: formData.method,
-      headers: {
-        "access-control-allow-origin": "*",
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    });
-    let data = await response.json();
-    props.setResult(data);
-    console.log(data);
+
+    try {
+      let options = {
+        method: formData.method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      if (formData.method === "POST" || formData.method === "PUT") {
+        options.body = JSON.stringify(requestBody);
+      }
+
+      let response = await fetch(formData.url, options);
+      let data = await response.json();
+      props.setResult(data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const textArea = (e) => {
-    e.target.value === "POST" || e.target.value === "PUT"
-      ? setBody(true)
-      : setBody(false);
+    const selectedMethod = e.target.value;
+    setBody(selectedMethod === "POST" || selectedMethod === "PUT");
+  };
+
+  const handleRequestBodyChange = (e) => {
+    setRequestBody(e.target.value);
   };
 
   return (
@@ -48,7 +59,10 @@ function Form(props) {
         {body ? (
           <label>
             <span>Body</span>
-            <textarea></textarea>
+            <textarea
+              value={requestBody}
+              onChange={handleRequestBodyChange}
+            ></textarea>
           </label>
         ) : null}
         <button type="submit">GO!</button>
