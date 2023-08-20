@@ -1,72 +1,63 @@
 import React, { useState } from "react";
+
 import "./form.scss";
 
 function Form(props) {
   const [body, setBody] = useState(false);
-  const [requestBody, setRequestBody] = useState("");
+  const [postData, setPostData] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = {
-      method: e.target[1].value,
-      url: e.target[0].value,
+      method: e.target[0].value,
+      url: e.target[1].value,
+      body: postData,
     };
-
-    try {
-      let options = {
-        method: formData.method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-
-      if (formData.method === "POST" || formData.method === "PUT") {
-        options.body = JSON.stringify(requestBody);
-      }
-
-      let response = await fetch(formData.url, options);
-      let data = await response.json();
-      props.setResult(data);
-      console.log(data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    console.log(formData);
+    props.handleApiCall(formData);
   };
-
+  const sendBody = (e) => {
+    let body = document.getElementById("body").value;
+    setPostData(body);
+  };
   const textArea = (e) => {
-    const selectedMethod = e.target.value;
-    setBody(selectedMethod === "POST" || selectedMethod === "PUT");
-  };
-
-  const handleRequestBodyChange = (e) => {
-    setRequestBody(e.target.value);
+    e.target.value === "POST" || e.target.value === "PUT"
+      ? setBody(true)
+      : setBody(false);
   };
 
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <label>
-          <input name="url" type="text" required placeholder="URL" />
-        </label>
         <label className="methods">
           <select onChange={textArea} id="methods">
-            <option value="GET">GET</option>
+            <option data-testid="GET" value="GET">
+              GET
+            </option>
             <option value="POST">POST</option>
             <option value="PUT">PUT</option>
             <option value="DELETE">DELETE</option>
           </select>
         </label>
-        {body ? (
-          <label>
-            <span>Body</span>
-            <textarea
-              value={requestBody}
-              onChange={handleRequestBodyChange}
-            ></textarea>
-          </label>
-        ) : null}
-        <button type="submit">GO!</button>
+        <label>
+          <input
+            data-testid="input"
+            name="url"
+            type="text"
+            required
+            placeholder="URL"
+          />
+        </label>
+        <button data-testid="btn" type="submit">
+          GO!
+        </button>
       </form>
+      {body ? (
+        <div id="text-body">
+          <span>Body</span>
+          <textarea id="body" onInput={sendBody}></textarea>
+        </div>
+      ) : null}
     </>
   );
 }

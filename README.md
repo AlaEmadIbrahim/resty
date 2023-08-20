@@ -1,6 +1,8 @@
 # resty
 
-## try this HTTP link
+## for testing use this link fix lab 27 & lab 28
 
-- https://jsonplaceholder.typicode.com/posts/1
-- choose get method
+url : https://reqres.in/api/posts
+method : post then get put
+
+## header appear now successfully

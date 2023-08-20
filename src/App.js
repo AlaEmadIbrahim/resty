@@ -1,52 +1,88 @@
-import React, {useState} from 'react';
-import './app.scss';
-import Footer from './components/footer/index';
-import Form from './components/form/index';
-import Results from './components/results/index';
-import Header from "./components/header/index";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+import "./app.scss";
+
+import Header from "./components/header";
+import Footer from "./components/footer";
+import Form from "./components/form";
+import Results from "./components/results";
 
 function App() {
+  const [data, setData] = useState({ data: null, requestParams: {} });
 
-    const [data,
-        setData] = useState({data: null, requestParams: {}})
+  const [result, setResult] = useState({});
 
-    const [result,
-        setResult] = useState()
-
-    function callApi(requestParams) {
-        const data = {
-            count: 2,
-            results: [
-                {
-                    name: 'fake thing 1',
-                    url: 'http://fakethings.com/1'
-                }, {
-                    name: 'fake thing 2',
-                    url: 'http://fakethings.com/2'
-                }
-            ]
-        };
-        setData({
-            ...data,
-            data,
-            requestParams
+  useEffect(() => {
+    if (data.requestParams.method === "GET") {
+      axios
+        .get(data.requestParams.url)
+        .then((res) => {
+          setResult(res);
         })
+        .catch((e) => {
+          console.log(e);
+          setResult({ stauts: "Sorry Something went wrong" });
+        });
     }
-    return (
-        <React.Fragment>
-            <Header/>
-            <Form handleApiCall={callApi} setResult={setResult}/>
-            <div id='body'>
-                <div id={result?'method':null}>
-                    <div>{data.requestParams.method}</div>
-                    <div>{data.requestParams.url}</div>
-                </div>
-                <Results result={result}/>
-            </div>
-            <Footer/>
-        </React.Fragment>
-    );
+    if (data.requestParams.method === "POST") {
+      axios
+        .post(data.requestParams.url, data.requestParams.body)
+        .then((res) => {
+          setResult(res);
+        })
+        .catch((e) => {
+          console.log(e);
+          setResult({ stauts: "Sorry Something went wrong" });
+        });
+    }
+    if (data.requestParams.method === "PUT") {
+      axios
+        .post(data.requestParams.url, data.requestParams.body)
+        .then((res) => {
+          setResult(res);
+        })
+        .catch((e) => {
+          console.log(e);
+          setResult({ stauts: "Sorry Something went wrong" });
+        });
+    }
+    if (data.requestParams.method ==="DELETE") {
+      axios
+        .post(data.requestParams.url)
+        .then((res) => {
+          setResult({ stauts: "Deleted Successfuly" });
+        })
+        .catch((e) => {
+          console.log(e);
+          setResult({ stauts: "Sorry Something went wrong" });
+        });
+    }
+  }, [data]);
 
+  function callApi(formData) {
+    setData({
+      ...data,
+      data: result,
+      requestParams: formData,
+    });
+    console.log("TTT", result);
+  }
+
+  return (
+    <React.Fragment>
+      <Header />
+      <Form handleApiCall={callApi} setResult={setResult} />
+      <div id="body">
+        <div id={result ? "method" : null}>
+          <div>{data.requestParams.method}</div>
+          <div>{data.requestParams.url}</div>
+        </div>
+        <Results result={result} />
+      </div>
+      <Footer />
+    </React.Fragment>
+  );
 }
 
 export default App;
